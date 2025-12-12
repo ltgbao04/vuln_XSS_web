@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Search Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .search-box {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: #667eea;
+        }
+        button {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #5a6fd6;
+        }
+        .result {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .result h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .nav {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .nav a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Search Portal</h1>
+        <nav class="nav">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Enter your search query...">
+            <button onclick="search()">Search</button>
+        </div>
+        <div class="result" id="resultBox">
+            <h3>Search Results</h3>
+            <div id="output">Enter a search term to get started.</div>
+        </div>
+    </div>
+
+    <script>
+        // DOM XSS Vulnerability: User input from URL hash is directly inserted into DOM
+        function displayFromHash() {
+            var hash = window.location.hash.substring(1);
+            if (hash) {
+                // VULNERABLE: Direct innerHTML assignment from URL hash
+                document.getElementById('output').innerHTML = "Searching for: " + decodeURIComponent(hash);
+            }
+        }
+
+        function search() {
+            var query = document.getElementById('searchInput').value;
+            if (query) {
+                // VULNERABLE: Direct innerHTML assignment from user input
+                document.getElementById('output').innerHTML = "Results for: " + query;
+                window.location.hash = query;
+            }
+        }
+
+        // Check hash on page load
+        window.onload = displayFromHash;
+        window.onhashchange = displayFromHash;
+    </script>
+</body>
+</html>
